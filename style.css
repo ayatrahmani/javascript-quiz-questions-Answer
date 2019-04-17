@@ -1,0 +1,26 @@
+
+body{
+    padding: 40px 0px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.queston-title{
+    color: #d00000;
+    font-weight: bold;
+}
+.card-header {
+    padding: 6px 9px;
+}
+.qs-slide-sec{
+    display: none;
+}
+
+.card-header label{
+    padding-right: 15px;
+    margin: 0px;
+    font-size: 14px;
+    color: #0766cc;
+    font-weight: bold;
+}
+.btn:disabled {
+   cursor: not-allowed;
+  }

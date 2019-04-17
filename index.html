@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <title>Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <!-- start wrapper sec -->
+    <div class="wrapper">
+        <!-- start container -->
+        <div class="container">
+            <!-- start card -->
+            <div class="card">
+                <div class="card-header">
+                    <label>Current:<span id="currentLen"></span></label>
+                    <label>Total:<span id="totalLen"></span></label>
+                </div>
+                <!-- end header -->
+                <div class="card-body" id="qzSlide">
+                </div>
+                <!-- end body -->
+                <div class="card-footer">
+                    <button type="button" id="prvBtn" onclick="prv()" class="btn btn-primary btn-sm">Previous</button>
+                    <button type="button" id="nextBtn" onclick="next()" class="btn btn-primary btn-sm">Next</button>
+                    <button type="button" id="submitBtn" class="btn btn-primary btn-sm">Submit</button>
+                </div>
+                <!-- end footer -->
+            </div>
+            <!-- end card -->
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- end wrapper -->
+</body>
+<script>
+    let questions = [
+        { id: 'Q-101', title: 'What is India\'s capital', type: 'radiogroup', options: ['Delhi', 'Mumbai', 'Kolkatta', 'Pune'] },
+        { id: 'Q-103', title: "Grand Central Terminal, Park Avenue, New York is the world's", type: 'radiogroup', options: ['largest railway station', 'highest railway station', 'longest railway station', 'None of the above'] },
+        { id: 'Q-103', title: 'Entomology is the science that studies', type: 'dropdown', options: ['Behavior of human beings', 'Insects', 'The origin and history of technical and scientific terms', 'The formation of rocks'] }
+    ]
+    // init & declare Glboal Var
+    let divId = document.getElementById("qzSlide");
+    let allDiv = document.getElementsByClassName("qs-slide-sec");
+    var nextBtn = document.getElementById("nextBtn");
+    var prvBtn = document.getElementById("prvBtn");
+    var submitBtn = document.getElementById("submitBtn");
+    var totalLen = document.getElementById("totalLen");
+    var currentLen = document.getElementById("currentLen");
+    totalLen.innerText = questions.length;
+    currentLen.innerText = 1;
+    submitBtn.disabled = true;
+    nextBtn.disabled = true;
+    submitBtn.style.display = "none";
+    var qsLen = questions.length;
+    var answerValue = [];
+    var radioSelectedVal;
+
+    // bind the html
+    var html = '';
+    for (var i = 0; i < questions.length; i++) {
+        html += '<div class="qs-slide-sec" id="' + (i + 1) + '">';
+        html += '<div  class="queston-title">' + (i + 1) + '.' + ' ' + questions[i].title + ' ?' + '</div>';
+        html += '<div class="answer-opt">';
+        for (var j = 0; j < questions[i].options.length; j++) {
+            html += '<div class="form-check">';
+            html += ' <label class="form-check-label" for="' + 'radio' + i + j + 1 + '"><input type="radio" data-id="' + questions[i].id + '" onchange="getRadioVal(event)" class="form-check-input" id="' + 'radio' + i + j + 1 + '" name="' + 'option' + (i + 1) + '" value="' + questions[i].options[j] + '">' + questions[i].options[j] + '</label>';
+            html += '</div>';
+        }
+        html += '</div>';
+        html += '</div>';
+    }
+    divId.innerHTML = html;
+    // radio button on change
+    function getRadioVal(event) {
+        let qsId = event.target.getAttribute("data-id");
+        let selectAns = event.target.value;
+        radioSelectedVal = {
+            'id': qsId,
+            'val': selectAns
+
+        }
+        nextBtn.disabled = false;
+        submitBtn.disabled = false;
+    }
+
+    //push all answer value and question id
+    //not work on duplicate data (incomplete)
+    function pushData() {
+        answerValue.push({
+            id: radioSelectedVal.id,
+            value: radioSelectedVal.val
+        });
+    }
+
+    //click count here
+    var clicksCount = 0;
+    clicksCount == 0 ? document.getElementById('1').style.display = "block" : '';
+    clicksCount > 0 ? prvBtn.disabled = false : prvBtn.disabled = true;
+    var clicksCount = 1;
+    var clicksCounts = 0;
+    //next function on click
+    function next() {
+        clicksCount += 1;
+        clicksCounts += 1;
+        currentLen.innerText = clicksCount;
+        let getNextDiv = document.getElementById(clicksCount);
+        for (var i = 0, length = allDiv.length; i < length; i++) {
+            allDiv[i].style.display = 'none';
+        }
+
+
+        getNextDiv.style.display = "block";
+
+        if (qsLen !== clicksCount) {
+            nextBtn.disabled = false;
+        }
+        else {
+            nextBtn.disabled = true;
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = "inline-block";
+        }
+        clicksCount > "1" ? prvBtn.disabled = false : prvBtn.disabled = true;
+        nextBtn.disabled = true;
+        submitBtn.disabled = true;
+        var radios = document.getElementsByName('option' + clicksCount);
+        // alert(clicksCounts);
+        for (let i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                //  alert(radios[i].value);
+                nextBtn.disabled = false;
+                submitBtn.disabled = false;
+                break;
+            }
+            else {
+                nextBtn.disabled = true;
+                submitBtn.disabled = true;
+            }
+        }
+        //init
+        pushData();
+    };
+    //prv function on click
+    function prv() {
+        clicksCount += -1;
+        clicksCounts += -1;
+        currentLen.innerText = clicksCount;
+        let getNextDiv = document.getElementById(clicksCount);
+        for (var i = 0, length = allDiv.length; i < length; i++) {
+            allDiv[i].style.display = 'none';
+        }
+        getNextDiv.style.display = "block";
+        if (qsLen > clicksCount) {
+            nextBtn.disabled = false;
+            nextBtn.style.display = 'inline-block';
+            submitBtn.style.display = "none";
+        }
+        else {
+            nextBtn.disabled = true
+        }
+        clicksCount == "1" ? prvBtn.disabled = true : prvBtn.disabled = false;
+    };
+
+
+</script>
+
+</html>
